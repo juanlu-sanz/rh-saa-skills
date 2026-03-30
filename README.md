@@ -16,10 +16,8 @@ Claude Code plugin marketplace for Red Hat Solution Architects. Provides AI-assi
 From inside Claude Code, run:
 
 ```
-/plugin marketplace add <org>/rh-saa-skills
+/plugin marketplace add juanlu-sanz/rh-saa-skills
 ```
-
-Replace `<org>` with the GitHub org or user where this repo is hosted (e.g. `myorg/rh-saa-skills`).
 
 ### 2. Install a plugin
 
