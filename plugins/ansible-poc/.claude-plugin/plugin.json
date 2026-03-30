@@ -1,0 +1,11 @@
+{
+  "name": "ansible-poc",
+  "description": "Creates structured Ansible PoC repositories for customer demos and automation scenarios using Red Hat Ansible Automation Platform",
+  "version": "1.0.0",
+  "author": {
+    "name": "Juanlu Sanz",
+    "email": "jsanzmor@redhat.com"
+  },
+  "keywords": ["ansible", "poc", "red-hat", "aap", "automation", "proof-of-concept"],
+  "license": "Apache-2.0"
+}

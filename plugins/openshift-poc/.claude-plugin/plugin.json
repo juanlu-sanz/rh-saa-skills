@@ -1,0 +1,11 @@
+{
+  "name": "openshift-poc",
+  "description": "Creates structured OpenShift PoC repositories for bug reproductions, feature demos, and capability setups using Red Hat products",
+  "version": "1.0.0",
+  "author": {
+    "name": "Juanlu Sanz",
+    "email": "jsanzmor@redhat.com"
+  },
+  "keywords": ["openshift", "poc", "red-hat", "kubernetes", "proof-of-concept"],
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "rh-saa-skills",
+  "owner": {
+    "name": "Juanlu Sanz",
+    "email": "jsanzmor@redhat.com"
+  },
+  "metadata": {
+    "description": "Claude Code skills for Red Hat Solution Architects — OpenShift and Ansible PoC generators"
+  },
+  "plugins": [
+    {
+      "name": "openshift-poc",
+      "source": "./plugins/openshift-poc",
+      "description": "Creates structured OpenShift PoC repositories for bug reproductions, feature demos, and capability setups using Red Hat products"
+    },
+    {
+      "name": "ansible-poc",
+      "source": "./plugins/ansible-poc",
+      "description": "Creates structured Ansible PoC repositories for customer demos and automation scenarios using Red Hat Ansible Automation Platform"
+    }
+  ]
+}
