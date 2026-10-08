@@ -1,0 +1,50 @@
+name: Skill misfire
+description: A skill triggered incorrectly or produced the wrong output
+title: "[misfire] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill?
+      options:
+        - antora-workshop
+    validations:
+      required: true
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which tool were you using?
+      options:
+        - Cursor
+        - Claude Code
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Prompt used
+      description: The exact prompt (or close to it) that triggered the skill.
+      placeholder: "I asked: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did the AI actually produce?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What should the AI have done instead?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might help (model version, other skills installed, etc.)

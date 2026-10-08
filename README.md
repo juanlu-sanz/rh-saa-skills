@@ -1,214 +1,119 @@
 # rh-saa-skills
 
-Claude Code plugin marketplace for Red Hat Solution Architects. Provides AI-assisted skills for generating structured proof-of-concept repositories.
+Shared AI skills for Red Hat Solution Architects. Works with both
+[Cursor](https://cursor.com) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
-## Available Plugins
+## Available Skills
 
-| Plugin | Description |
+| Skill | Description |
 |---|---|
-| **openshift-poc** | Generates structured OpenShift PoC repos — bug reproductions, feature demos, and capability setups with Red Hat products |
-| **ansible-poc** | Generates structured Ansible PoC repos — customer demos and automation scenarios using Red Hat AAP and certified collections |
+| **antora-workshop** | Generates structured Red Hat Scholars courseware workshops using AsciiDoc and Antora, with progressive hands-on steps, collapsible verification blocks, and reset/undo sections |
 
-## Quick Start
+## Install
 
-### 1. Add the marketplace
+### First time
 
-From inside Claude Code, run:
-
-```
-/plugin marketplace add juanlu-sanz/rh-saa-skills
-```
-
-### 2. Install a plugin
-
-```
-/plugin install openshift-poc@rh-saa-skills
-```
-
-```
-/plugin install ansible-poc@rh-saa-skills
-```
-
-### 3. Use the skills
-
-Once installed, the skills activate automatically based on context. Ask Claude Code to create a PoC and it will follow the skill's structure:
-
-```
-> Create an OpenShift PoC for reproducing OOMKilled pods without resource limits
-
-> Create an Ansible POC for automating RHEL system hardening with RHEL System Roles
-```
-
-The skills are model-invoked — Claude detects when you're asking for a PoC and applies the right structure, templates, and Red Hat product preferences automatically.
-
-## What Each Plugin Does
-
-### openshift-poc
-
-When triggered, Claude will scaffold a complete PoC repository with:
-
-- Folder-per-step structure (`01-problem-reproduction/`, `02-solution-<name>/`, etc.)
-- Valid, minimal OpenShift/Kubernetes YAML manifests
-- README files with prerequisites, step-by-step instructions, and expected output
-- Official Red Hat documentation links (docs.redhat.com, docs.openshift.com)
-- Red Hat product preference table (ACS, ACM, ODF, Pipelines, etc.)
-
-### ansible-poc
-
-When triggered, Claude will scaffold a complete PoC repository with:
-
-- Official Ansible directory layout (inventory, playbooks, roles, docs)
-- `ansible.cfg`, `requirements.yml`, and `inventory/hosts.yml`
-- Playbooks using FQCNs and explicit collection declarations
-- Verification playbook (`verify.yml`) for smoke testing
-- `docs/` folder with setup, procedures, and verification guides
-- Only Red Hat Certified or Validated Collections
-
-## Local Development
-
-To test the plugins locally without adding the marketplace:
+Clone the repository and run the install script:
 
 ```bash
-# Test a single plugin
-claude --plugin-dir ./plugins/openshift-poc
-
-# Test both plugins
-claude --plugin-dir ./plugins/openshift-poc --plugin-dir ./plugins/ansible-poc
+git clone https://github.com/juanlu-sanz/rh-saa-skills ~/.rh-saa-skills
+~/.rh-saa-skills/install.sh
 ```
 
-Inside Claude Code, reload after making changes:
+The script creates symlinks into `~/.cursor/skills/` and `~/.claude/skills/`
+(only for the tools you have installed). Because these are symlinks, both tools
+always read the same files.
 
-```
-/reload-plugins
-```
+### Update
 
-## Validating
-
-Run the built-in validator to check plugin structure:
+When there's a new version:
 
 ```bash
-claude plugin validate ./plugins/openshift-poc
-claude plugin validate ./plugins/ansible-poc
+~/.rh-saa-skills/install.sh update
 ```
+
+This pulls the latest changes and re-links any new skills that were added.
+
+### Get notified of updates
+
+Set the repository's **Watch** option to **Releases only** on GitHub. You'll
+get an email whenever a new version is tagged.
+
+### Windows / Claude Desktop / Claude Web
+
+Download the zip from the
+[latest release](https://github.com/juanlu-sanz/rh-saa-skills/releases/latest)
+and extract the skill folder into the appropriate directory. Updating means
+downloading and extracting the new zip.
+
+## How it works
+
+Each skill is a directory under `skills/` containing a `SKILL.md` file (and
+optionally supporting files like `reference.md`). Both Cursor and Claude Code
+read `SKILL.md` files with the same format: YAML frontmatter with `name` and
+`description`, followed by the full instructions.
+
+The `install.sh` script symlinks each skill directory into the locations where
+Cursor and Claude Code look for skills. Since they're symlinks, a `git pull`
+in this repo instantly updates every linked tool.
 
 ## Repository Structure
 
 ```
 rh-saa-skills/
-├── .claude-plugin/
-│   └── marketplace.json            # Marketplace catalog
-├── plugins/
-│   ├── openshift-poc/
-│   │   ├── .claude-plugin/
-│   │   │   └── plugin.json         # Plugin manifest
-│   │   └── skills/
-│   │       └── openshift-poc/
-│   │           ├── SKILL.md         # Skill instructions
-│   │           └── templates.md     # README/YAML templates
-│   └── ansible-poc/
-│       ├── .claude-plugin/
-│       │   └── plugin.json          # Plugin manifest
-│       └── skills/
-│           └── ansible-poc/
-│               ├── SKILL.md         # Skill instructions
-│               └── templates.md     # Playbook/role templates
-└── README.md
+├── skills/
+│   └── antora-workshop/
+│       ├── SKILL.md              # Skill instructions
+│       └── reference.md          # Boilerplate templates
+├── install.sh                    # Install and update script
+├── CHANGELOG.md
+├── README.md
+├── .github/
+│   ├── CODEOWNERS
+│   ├── ISSUE_TEMPLATE/
+│   │   └── skill-misfire.yml     # "The skill did the wrong thing" template
+│   └── workflows/
+│       ├── lint.yml              # Validates SKILL.md frontmatter on PRs
+│       └── release.yml           # Zips skills and attaches to GitHub Releases
 ```
-
-## Requirements
-
-- Claude Code **1.0.33** or later (`claude --version` to check)
-- A GitHub-hosted copy of this repository (for marketplace installs)
 
 ## Contributing
 
-Contributions are welcome. Follow the steps below to add a new skill or improve an existing one.
-
-### Adding a new plugin
-
-1. Create the plugin directory:
-
-```bash
-mkdir -p plugins/<plugin-name>/.claude-plugin
-mkdir -p plugins/<plugin-name>/skills/<skill-name>
-```
-
-2. Create the plugin manifest at `plugins/<plugin-name>/.claude-plugin/plugin.json`:
-
-```json
-{
-  "name": "<plugin-name>",
-  "description": "One-line description of what the plugin does",
-  "version": "1.0.0",
-  "author": {
-    "name": "Your Name",
-    "email": "you@redhat.com"
-  },
-  "keywords": ["relevant", "tags"],
-  "license": "Apache-2.0"
-}
-```
-
-3. Write the skill instructions in `plugins/<plugin-name>/skills/<skill-name>/SKILL.md`. The file needs YAML frontmatter with `name` and `description`, followed by the full instructions Claude should follow:
-
-```markdown
----
-name: my-skill
-description: >-
-  When and why Claude should activate this skill.
-  Be specific about trigger phrases.
----
-
-# Skill Title
-
-Instructions for Claude go here...
-```
-
-4. Register the plugin in `.claude-plugin/marketplace.json` by adding an entry to the `plugins` array:
-
-```json
-{
-  "name": "<plugin-name>",
-  "source": "./plugins/<plugin-name>",
-  "description": "Same description as in plugin.json"
-}
-```
-
-5. Validate and test:
-
-```bash
-# Validate structure
-claude plugin validate ./plugins/<plugin-name>
-
-# Test locally
-claude --plugin-dir ./plugins/<plugin-name>
-```
-
-### Modifying an existing plugin
-
-1. Edit the `SKILL.md` and/or `templates.md` files under the plugin's `skills/` directory.
-2. Bump the `version` in the plugin's `plugin.json` (follow [semver](https://semver.org/) — patch for fixes, minor for new features, major for breaking changes).
-3. Test locally with `claude --plugin-dir ./plugins/<plugin-name>` and run `/reload-plugins` after changes.
-4. Open a pull request with a clear description of what changed and why.
-
-### Skill writing guidelines
-
-- Write all content in English.
-- Be prescriptive — tell Claude exactly what structure, files, and conventions to produce.
-- Include a quality checklist at the end so Claude can self-verify.
-- Link to official Red Hat documentation (`docs.redhat.com`, `docs.openshift.com`, `docs.ansible.com`) — never to unofficial blogs or community forums.
-- If the skill references templates, put them in a `templates.md` file alongside the `SKILL.md`.
-
-### Pull request process
+### Modifying a skill
 
 1. Fork this repository and create a feature branch.
-2. Make your changes.
-3. Validate all plugins: `claude plugin validate ./plugins/<name>`.
-4. Test the skill end-to-end by running Claude Code with `--plugin-dir` and asking it to generate a PoC.
-5. Open a PR against `main`. Include:
-   - What plugin was added or changed
-   - A sample prompt and summary of the output Claude produces
-   - Confirmation that `claude plugin validate` passes
+2. Edit the `SKILL.md` and/or supporting files under `skills/<name>/`.
+3. Test the skill by running Cursor or Claude Code with the updated files.
+4. Open a PR with a clear description of what changed and why. Include a
+   sample prompt and summary of the output the AI produces.
+
+### Adding a new skill
+
+1. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter:
+
+   ```markdown
+   ---
+   name: my-skill
+   description: >-
+     When and why the AI should activate this skill.
+     Be specific about trigger phrases.
+   ---
+
+   # Skill Title
+
+   Instructions go here...
+   ```
+
+2. Add a supporting file (e.g. `templates.md`, `reference.md`) if the skill
+   needs boilerplate templates.
+3. Update this README's **Available Skills** table.
+4. Open a PR.
+
+### Reporting a skill misfire
+
+If a skill triggered when it shouldn't have, or produced the wrong output,
+[open an issue](https://github.com/juanlu-sanz/rh-saa-skills/issues/new?template=skill-misfire.yml)
+with the prompt you used, what happened, and what you expected.
 
 ## Maintainer
 

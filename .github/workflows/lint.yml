@@ -1,0 +1,70 @@
+name: lint
+
+on:
+  pull_request:
+    paths:
+      - "skills/**/SKILL.md"
+
+jobs:
+  validate-frontmatter:
+    name: Validate SKILL.md frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check frontmatter
+        run: |
+          errors=0
+          for skill in skills/*/SKILL.md; do
+            echo "Checking $skill..."
+
+            # Extract frontmatter (between first two --- lines)
+            frontmatter=$(sed -n '/^---$/,/^---$/p' "$skill" | sed '1d;$d')
+
+            if [[ -z "$frontmatter" ]]; then
+              echo "  ERROR: No YAML frontmatter found"
+              errors=$((errors + 1))
+              continue
+            fi
+
+            # Check for required fields
+            name=$(echo "$frontmatter" | grep -E '^name:' || true)
+            if [[ -z "$name" ]]; then
+              echo "  ERROR: Missing 'name' field"
+              errors=$((errors + 1))
+            else
+              echo "  name: OK"
+            fi
+
+            description=$(echo "$frontmatter" | grep -E '^description:' || true)
+            if [[ -z "$description" ]]; then
+              echo "  ERROR: Missing 'description' field"
+              errors=$((errors + 1))
+            else
+              # Check description length (extract full multiline description)
+              desc_text=$(sed -n '/^---$/,/^---$/p' "$skill" | sed '1d;$d' | sed -n '/^description:/,/^[a-z]/p' | sed '$d' | sed 's/^description: *>-\?//' | tr '\n' ' ' | sed 's/  */ /g' | xargs)
+              desc_len=${#desc_text}
+              if [[ $desc_len -gt 500 ]]; then
+                echo "  WARNING: Description is $desc_len chars (recommended: under 500)"
+              else
+                echo "  description: OK ($desc_len chars)"
+              fi
+            fi
+
+            # Check for personal path references
+            if grep -qn '/Users/' "$skill"; then
+              echo "  ERROR: Contains personal path references (/Users/...)"
+              grep -n '/Users/' "$skill"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [[ $errors -gt 0 ]]; then
+            echo ""
+            echo "Found $errors error(s)"
+            exit 1
+          fi
+
+          echo ""
+          echo "All skills passed validation"
