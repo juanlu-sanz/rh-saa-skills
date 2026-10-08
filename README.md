@@ -1,6 +1,6 @@
 # rh-saa-skills
 
-Shared AI skills for Red Hat Solution Architects. Works with both
+Shared AI skills for Red Hat Adoption Architects. Works with both
 [Cursor](https://cursor.com) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 ## Available Skills
