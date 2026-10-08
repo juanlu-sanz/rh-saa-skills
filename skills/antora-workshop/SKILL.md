@@ -27,7 +27,8 @@ when they cover the use case. Never include customer names, user names, or email
 <workshop-slug>/
 ├── README.adoc                          # Repo overview, local dev, structure table
 ├── .gitignore
-├── .cursor/rules/workshop-conventions.mdc  # Cursor AI conventions
+├── AGENTS.md                                # AI conventions (Cursor, Codex, Copilot)
+├── CLAUDE.md                                # Claude Code entry point (imports AGENTS.md)
 ├── Dockerfile                           # Antora build + httpd container
 ├── package.json                         # npm dependencies (Antora, Gulp, BrowserSync)
 ├── gulpfile.babel.js                    # Gulp tasks for dev server
@@ -511,11 +512,17 @@ These should cover:
 
 ---
 
-## .cursor/rules/workshop-conventions.mdc
+## AGENTS.md and CLAUDE.md
 
-Create a project-specific Cursor rules file covering: repository purpose, structure,
-AsciiDoc formatting, CLI conventions, content rules, and YAML conventions.
-See [reference.md](reference.md) for the full template.
+Create two files in the workshop root so that AI tools follow the project conventions:
+
+- **AGENTS.md**: Contains the full workshop conventions (repository purpose, structure,
+  AsciiDoc formatting, CLI conventions, content rules, and YAML conventions). This file
+  is read automatically by Cursor, Codex, Copilot, and most other AI coding tools.
+- **CLAUDE.md**: A one-line file containing `@AGENTS.md` that tells Claude Code to
+  import the shared conventions file.
+
+See [reference.md](reference.md) for both templates.
 
 ---
 
@@ -648,7 +655,7 @@ Before finishing:
 - [ ] Official Documentation section links to `docs.redhat.com`
 - [ ] Alternatives Considered table is neutral (no sales language)
 - [ ] No em dashes, no customer names, no placeholder doc links
-- [ ] `.cursor/rules/workshop-conventions.mdc` created for the project
+- [ ] `AGENTS.md` and `CLAUDE.md` created for the project
 - [ ] `.github/workflows/docs.yml` configured
 - [ ] `site.yml` and `dev-site.yml` configured with correct URLs
 - [ ] `.gitignore` covers all generated/sensitive files

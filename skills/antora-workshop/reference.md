@@ -436,15 +436,9 @@ oc get <resource> --context cluster-a
 
 ---
 
-## .cursor/rules/workshop-conventions.mdc Template
+## AGENTS.md Template
 
 ```markdown
----
-description: Conventions for the <workshop-title> workshop
-globs: "**/*.adoc,**/*.yaml,**/*.yml"
-alwaysApply: false
----
-
 # Workshop Conventions
 
 ## Repository Purpose
@@ -495,6 +489,14 @@ alwaysApply: false
 - Use `app.kubernetes.io/part-of: <app-name>` label consistently
 - Include resource requests and limits on Deployments
 - Include readiness and liveness probes where applicable
+```
+
+---
+
+## CLAUDE.md Template
+
+```markdown
+@AGENTS.md
 ```
 
 ---
